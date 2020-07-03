@@ -12,11 +12,11 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class ValuesController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public WeatherForecastController(DataContext context)
+        public ValuesController(DataContext context)
         {
             _context=context;
         }
@@ -26,7 +26,7 @@ namespace API.Controllers
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<ValuesController> _logger;
 
         // public WeatherForecastController(ILogger<WeatherForecastController> logger)
         // {
