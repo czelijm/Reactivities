@@ -5,6 +5,7 @@ project.lock.json
 *.pyc
 appsettings.json
 *.db
+/node_modules
 
 # Visual Studio Code
 .vscode
