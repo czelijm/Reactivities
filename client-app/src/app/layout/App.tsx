@@ -1,4 +1,4 @@
-import React, {useState, useEffect, Fragment, SyntheticEvent} from 'react';
+import React, {useState, useEffect, Fragment, SyntheticEvent, useContext} from 'react';
 import axios from  'axios';
 import { Header, Icon, List, Container } from 'semantic-ui-react'
 import { IActivity } from '../models/activity';
@@ -6,10 +6,14 @@ import NavBar from '../../features/Nav/NavBar';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 import agent from '../api/agent';
 import { LoadingComponent } from './LoadingComponent';
+import  ActivityStore  from '../stores/activityStore';
+import {observer} from 'mobx-react-lite'; 
 
 let serverAddress = 'http://localhost:5000/api/activities'; 
 
 const App = () => {
+  const activityStore = useContext(ActivityStore);
+
   const [activities,setActivities] = useState<IActivity[]>([]);
   const [selectedActivity,setSelectedActivity] = useState<IActivity | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -58,19 +62,10 @@ const App = () => {
     };
 
     useEffect(()=>{
-      agent.Activities.list()
-        .then((response)=>{
-          let activities:IActivity[] = [];
-          response.forEach(activity =>{
-            activity.date = activity.date.split(".")[0];
-            activities.push(activity);
-          })
-          // console.log(response.data);
-          setActivities(activities);
-        }).then(()=>setLoading(false));
-    }, []);
+      activityStore.loadActivities();
+    }, [activityStore]);
 
-    if(loading) return <LoadingComponent content='Loading activities...' />
+    if(activityStore.loadingInitial) return <LoadingComponent content='Loading activities...' />
 
     return (
       <Fragment>
@@ -79,7 +74,7 @@ const App = () => {
          <NavBar openCreateForm = {handleOpenCreateForm}/>
          <Container style={{marginTop:"7em"}}>
             <ActivityDashboard 
-              activities={activities} 
+              activities={activityStore.activities} 
               selectActivity={handleSelectedActivity}
               selectedActivity={selectedActivity}
               editMode = {editMode}
@@ -98,4 +93,4 @@ const App = () => {
     );
 }
 
-export default App;
+export default observer(App);
